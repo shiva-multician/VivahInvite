@@ -22,23 +22,59 @@ export default function Hero() {
             }
         }
     }, []);
-    useEffect(() => {
-        const scrollSpeed = 0.6; // lower = slower scroll (0.3 → very slow, 1 → faster)
+useEffect(() => {
+    const scrollSpeed = 0.6; // scroll speed
 
-        function smoothAutoScroll() {
-            window.scrollBy(0, scrollSpeed);
+    function smoothAutoScroll() {
+        window.scrollBy(0, scrollSpeed);
 
-            // stop scrolling when reaching bottom
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-                clearInterval(scroller);
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            // Stop the scrolling
+            clearInterval(scroller);
+
+            // Function to create a floating heart
+            function createHeart() {
+                const heart = document.createElement("div");
+                heart.textContent = "❤️";
+                heart.style.position = "fixed";
+                heart.style.left = Math.random() * 100 + "vw"; // random horizontal position
+                heart.style.bottom = "-2rem"; // start below the screen
+                heart.style.fontSize = 12 + Math.random() * 24 + "px"; // random size
+                heart.style.color = ["#F43F5E", "#FB7185", "#F472B6"][Math.floor(Math.random() * 3)];
+                heart.style.zIndex = "9999";
+                heart.style.pointerEvents = "none";
+                heart.style.opacity = "1";
+                heart.style.transition = "all 2s linear";
+
+                document.body.appendChild(heart);
+
+                // Animate upward
+                setTimeout(() => {
+                    heart.style.bottom = "100vh";
+                    heart.style.opacity = "0";
+                    heart.style.transform = `translateX(${(Math.random() - 0.5) * 100}px)`; // slight horizontal movement
+                }, 10);
+
+                // Remove after animation
+                setTimeout(() => {
+                    heart.remove();
+                }, 2000);
             }
+
+            // Create many hearts
+            for (let i = 0; i < 50; i++) {
+                setTimeout(createHeart, i * 30); // stagger the hearts
+            }
+
+            // Jump to top
+            window.scrollTo(0, 0);
         }
+    }
 
-        // start scrolling
-        const scroller = setInterval(smoothAutoScroll, 10);
+    const scroller = setInterval(smoothAutoScroll, 10);
 
-        return () => clearInterval(scroller);
-    }, []);
+    return () => clearInterval(scroller);
+}, []);
 
 
     const CountdownTimer = ({ targetDate }) => {
